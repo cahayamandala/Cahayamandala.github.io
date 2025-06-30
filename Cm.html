@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cv. Cahaya Mandala Reporting System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: all 0.5s;
+        }
+
+        /* Page 1 Styles */
+        .page1 {
+            background-color: #1e88e5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+
+        .login-box h2 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+        }
+
+        .login-box input {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .login-box button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Page 2 Styles */
+        .page2 {
+            display: none;
+            padding: 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .page2::before {
+            content: "";
+            background-image: url('https://images.unsplash.com/photo-1597852074816-d933c7d2b988');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .report-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .report-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .report-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .transaction-btn {
+            background-color: #4caf50;
+        }
+
+        .income-btn {
+            background-color: #ffc107;
+        }
+
+        .stock-btn, .debt-btn {
+            background-color: #f44336;
+        }
+
+        .account-info {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .account-info img {
+            width: 50px;
+            margin-right: 15px;
+        }
+
+        .thank-you-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .thank-you-text {
+            color: white;
+            font-size: 2em;
+            text-align: center;
+            animation: fadeIn 2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Page 3 Styles */
+        .page3 {
+            display: none;
+            padding: 20px;
+        }
+
+        .input-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-input span {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+
+        .currency-input input {
+            padding-left: 30px;
+        }
+
+        .save-btn {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Saved Reports Section */
+        .saved-reports {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Login -->
+    <div class="page1" id="page1">
+        <div class="login-box">
+            <h2>Laporan Cahaya Mandala</h2>
+            <input type="text" id="username" placeholder="Enter your username">
+            <button onclick="checkLogin()">Login</button>
+            <div class="error-message" id="errorMessage">Error: Please enter a valid username</div>
+        </div>
+    </div>
+
+    <!-- Page 2: Boss View -->
+    <div class="page2" id="page2">
+        <div class="header">
+            <h1>Cv.cahaya mandala</h1>
+            <div id="currentDate"></div>
+        </div>
+
+        <button id="logoutBtn" style="position: absolute; top: 20px; right: 20px;">Keluar</button>
+
+        <p>silahkan mau melihat laporan apa bos??</p>
+
+        <div class="report-buttons">
+            <button class="report-btn transaction-btn" onclick="window.open('https://drive.google.com/drive/folders/1nAm25--EWlBcqo_CFjyCWtmogLrTwqNN', '_blank')">Laporan Transaksi</button>
+            <button class="report-btn income-btn" onclick="window.open('https://drive.google.com/drive/folders/1n6zRlECk0LOJ1QWui-wc4YK2ByTb-BLR', '_blank')">Laporan Pendapatan</button>
+            <button class="report-btn stock-btn" onclick="window.open('https://drive.google.com/drive/folders/1nHFVQzicfaywKr2F9o8XznPZi58pWrA4', '_blank')">Laporan Stok</button>
+            <button class="report-btn debt-btn" onclick="window.open('https://drive.google.com/drive/folders/1nK9ukmCX58RYl2AonVAIADbZLVq15dRN', '_blank')">Laporan Piutang</button>
+        </div>
+
+        <div class="account-info">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" alt="Dana Logo">
+            <div>
+                <strong>Nomor Rekening Dana:</strong><br>
+                +62 857-7905-8949 atas nama wiwi yulianti
+            </div>
+        </div>
+
+        <p style="margin-top: 20px; font-style: italic;">ketulusan bos untuk memberi bonus adalah suatu motivasi dan memberi semangat tinggi bagi kami</p>
+
+        <div class="saved-reports">
+            <h3>Laporan yang Disimpan:</h3>
+            <div id="savedReportsList"></div>
+        </div>
+
+        <div class="thank-you-animation" id="thankYouAnimation">
+            <div class="thank-you-text">
+                terimakasih telah memeriksa laporan kami, semoga hari bos menyenangkan
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Player View -->
+    <div class="page3" id="page3">
+        <h1>Input Laporan</h1>
+        
+        <div class="input-form">
+            <div class="form-group currency-input">
+                <label for="atkIncome">Pendapatan Atk</label>
+                <span>Rp</span>
+                <input type="number" id="atkIncome" placeholder="0">
+            </div>
+            
+            <div class="form-group currency-input">
+                <label for="copyIncome">Pendapatan Fotokopi</label>
+                <span>Rp</span>
+                <input type="number" id="copyIncome" placeholder="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="expenseDescription">Uraian Pengeluaran</label>
+                <textarea id="expenseDescription" placeholder="Tulis uraian pengeluaran..."></textarea>
+            </div>
+            
+            <div class="form-group currency-input">
+                <label for="expenseAmount">Jumlah Pengeluaran</label>
+                <span>Rp</span>
+                <input type="number" id="expenseAmount" placeholder="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="expenseTotal">Total Pengeluaran</label>
+                <input type="text" id="expenseTotal" readonly value="Rp 0">
+            </div>
+            
+            <button class="save-btn" onclick="saveReport()">Simpan</button>
+        </div>
+    </div>
+
+    <script>
+        // Check login function
+        function checkLogin() {
+            const username = document.getElementById('username').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (username === "") {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            if (username === "Bos besar") {
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'block';
+                updateDate();
+                loadSavedReports();
+                errorMessage.style.display = 'none';
+            } else if (username === "Player") {
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page3').style.display = 'block';
+                errorMessage.style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+        
+        // Update current date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
+        }
+        
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            const animation = document.getElementById('thankYouAnimation');
+            animation.style.display = 'flex';
+            
+            setTimeout(function() {
+                animation.style.display = 'none';
+                document.getElementById('page2').style.display = 'none';
+                document.getElementById('page1').style.display = 'flex';
+                document.getElementById('username').value = '';
+            }, 3000);
+        });
+        
+        // Calculate total expense
+        document.getElementById('expenseAmount').addEventListener('input', function() {
+            const amount = this.value ? parseInt(this.value) : 0;
+            document.getElementById('expenseTotal').value = 'Rp ' + amount.toLocaleString('id-ID');
+        });
+        
+        // Save report function
+        function saveReport() {
+            const atkIncome = document.getElementById('atkIncome').value;
+            const copyIncome = document.getElementById('copyIncome').value;
+            const expenseDescription = document.getElementById('expenseDescription').value;
+            const expenseAmount = document.getElementById('expenseAmount').value;
+            
+            if (!expenseDescription || !expenseAmount) {
+                alert('Harap isi uraian pengeluaran dan jumlah pengeluaran');
+                return;
+            }
+            
+            const now = new Date();
+            const dateString = now.toLocaleDateString('id-ID', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+            
+            const report = {
+                date: dateString,
+                atkIncome: atkIncome ? parseInt(atkIncome) : 0,
+                copyIncome: copyIncome ? parseInt(copyIncome) : 0,
+                expenseDescription,
+                expenseAmount: parseInt(expenseAmount)
+            };
+            
+            let savedReports = JSON.parse(localStorage.getItem('savedReports')) || [];
+            savedReports.push(report);
+            localStorage.setItem('savedReports', JSON.stringify(savedReports));
+            
+            alert('Laporan berhasil disimpan!');
+            
+            // Clear form
+            document.getElementById('atkIncome').value = '';
+            document.getElementById('copyIncome').value = '';
+            document.getElementById('expenseDescription').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseTotal').value = 'Rp 0';
+        }
+        
+        // Load saved reports
+        function loadSavedReports() {
+            const savedReports = JSON.parse(localStorage.getItem('savedReports')) || [];
+            const reportsList = document.getElementById('savedReportsList');
+            
+            reportsList.innerHTML = '';
+            
+            if (savedReports.length === 0) {
+                reportsList.innerHTML = '<p>Belum ada laporan yang disimpan.</p>';
+                return;
+            }
+            
+            savedReports.forEach(report => {
+                const reportItem = document.createElement('div');
+                reportItem.className = 'report-item';
+                
+                const totalIncome = report.atkIncome + report.copyIncome;
+                const netIncome = totalIncome - report.expenseAmount;
+                
+                reportItem.innerHTML = `
+                    <p><strong>Tanggal:</strong> ${report.date}</p>
+                    <p><strong>Pendapatan ATK:</strong> Rp ${report.atkIncome.toLocaleString('id-ID')}</p>
+                    <p><strong>Pendapatan Fotokopi:</strong> Rp ${report.copyIncome.toLocaleString('id-ID')}</p>
+                    <p><strong>Pengeluaran:</strong> Rp ${report.expenseAmount.toLocaleString('id-ID')} (${report.expenseDescription})</p>
+                    <p><strong>Total Pendapatan:</strong> Rp ${totalIncome.toLocaleString('id-ID')}</p>
+                    <p><strong>Pendapatan Bersih:</strong> Rp ${netIncome.toLocaleString('id-ID')}</p>
+                    <hr>
+                `;
+                
+                reportsList.appendChild(reportItem);
+            });
+        }
+    </script>
+</body>
+</html>
